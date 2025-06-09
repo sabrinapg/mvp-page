@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FinTrack Genesis</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      background: #f5f5f5;
+      color: #2d4a3e;
+    }
+
+    /* Parallax Container */
+    .parallax-container {
+      height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      perspective: 1px;
+      scroll-behavior: smooth;
+    }
+
+    /* Background Layers */
+    .bg-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    .bg-gradient {
+      background: linear-gradient(135deg, 
+        #f5f5f5 0%,
+        #e8f5e8 25%,
+        #d4f4d4 50%,
+        #c1f2c1 75%,
+        #aef0ae 100%);
+      transform: translateZ(-1px) scale(2);
+    }
+
+    .bg-geometric {
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(52, 211, 153, 0.1) 0%, transparent 30%),
+        radial-gradient(circle at 80% 40%, rgba(34, 197, 94, 0.08) 0%, transparent 35%),
+        radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 40%);
+      transform: translateZ(-0.5px) scale(1.5);
+    }
+
+    /* Floating Shapes - Genesis Style */
+    .floating-shapes {
+      position: absolute;
+      width: 100%;
+      height: 200%;
+      pointer-events: none;
+      transform: translateZ(-0.3px) scale(1.3);
+    }
+
+    .genesis-shape {
+      position: absolute;
+      background: linear-gradient(135deg, #34d399, #10b981, #065f46);
+      animation: float 8s ease-in-out infinite;
+      opacity: 0.7;
+    }
+
+    .diamond {
+      width: 60px;
+      height: 60px;
+      transform: rotate(45deg);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 52px solid #22c55e;
+      background: none !important;
+    }
+
+    .hexagon {
+      width: 50px;
+      height: 50px;
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    }
+
+    .genesis-shape:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
+    .genesis-shape:nth-child(2) { top: 60%; left: 85%; animation-delay: 2s; }
+    .genesis-shape:nth-child(3) { top: 30%; left: 75%; animation-delay: 4s; }
+    .genesis-shape:nth-child(4) { top: 80%; left: 15%; animation-delay: 1s; }
+    .genesis-shape:nth-child(5) { top: 5%; left: 60%; animation-delay: 3s; }
+    .genesis-shape:nth-child(6) { top: 45%; left: 5%; animation-delay: 5s; }
+
+    /* Main Content */
+    .content {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .hero-section {
+      max-width: 1000px;
+      margin-bottom: 6rem;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 3rem;
+      gap: 1rem;
+    }
+
+    .logo-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #34d399, #10b981, #065f46);
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    .company-name {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #065f46, #047857, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.05em;
+    }
+
+    .tagline {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: #047857;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .title {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 900;
+      margin-bottom: 2rem;
+      color: #065f46;
+      line-height: 1.1;
+      animation: slideInUp 0.8s ease-out;
+    }
+
+    .subtitle {
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      color: #047857;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      animation: slideInUp 0.8s ease-out 0.2s backwards;
+      font-weight: 500;
+    }
+
+    .highlight {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      color: #10b981;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      animation: slideInUp 0.8s ease-out 0.4s backwards;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 1.2rem 3rem;
+      background: linear-gradient(135deg, #10b981, #059669, #047857);
+      color: white;
+      text-decoration: none;
+      border-radius: 0;
+      clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+      font-size: 1.2rem;
+      font-weight: 700;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
+      animation: slideInUp 0.8s ease-out 0.6s backwards;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(16, 185, 129, 0.4);
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    /* Features Section - Genesis Style */
+    .features-section {
+      width: 100%;
+      max-width: 1200px;
+      margin-top: 8rem;
+      padding: 4rem 2rem;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      border-radius: 0;
+      clip-path: polygon(0 5%, 100% 0%, 100% 95%, 0% 100%);
+      border: 2px solid rgba(16, 185, 129, 0.2);
+      animation: slideInUp 0.8s ease-out 0.8s backwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .features-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(45deg, transparent 40%, rgba(16, 185, 129, 0.05) 50%, transparent 60%),
+        linear-gradient(-45deg, transparent 40%, rgba(52, 211, 153, 0.03) 50%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .features-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 3rem;
+      color: #065f46;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      list-style: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-item {
+      padding: 2.5rem;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #34d399, #10b981, #047857);
+      transition: left 0.4s ease;
+    }
+
+    .feature-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 25px 50px rgba(16, 185, 129, 0.2);
+    }
+
+    .feature-item:hover::before {
+      left: 0;
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      display: block;
+      filter: drop-shadow(0 2px 4px rgba(16, 185, 129, 0.3));
+    }
+
+    .feature-text {
+      font-size: 1.1rem;
+      color: #047857;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #10b981;
+      animation: bounce 2s infinite;
+      font-weight: bold;
+    }
+
+    /* Animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-15px) rotate(3deg); }
+      50% { transform: translateY(-25px) rotate(0deg); }
+      75% { transform: translateY(-10px) rotate(-3deg); }
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: rotate(45deg) translateY(0px); }
+      50% { transform: rotate(45deg) translateY(-10px); }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-10px); }
+      60% { transform: translateX(-50%) translateY(-5px); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .content {
+        padding: 1rem;
+      }
+      
+      .features-section {
+        margin-top: 4rem;
+        padding: 2rem 1rem;
+        clip-path: polygon(0 3%, 100% 0%, 100% 97%, 0% 100%);
+      }
+      
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .feature-item {
+        padding: 2rem;
+        clip-path: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%);
+      }
+
+      .logo-section {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .cta-button {
+        clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+      }
+    }
+
+    /* Genesis-style accent elements */
+    .accent-dots {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #10b981;
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    .dot:nth-child(1) { top: 10%; left: 15%; animation: twinkle 2s infinite; }
+    .dot:nth-child(2) { top: 25%; left: 85%; animation: twinkle 2s infinite 0.5s; }
+    .dot:nth-child(3) { top: 70%; left: 10%; animation: twinkle 2s infinite 1s; }
+    .dot:nth-child(4) { top: 80%; left: 90%; animation: twinkle 2s infinite 1.5s; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+  </style>
+</head>
+<body>
+  <div class="parallax-container">
+    <!-- Background Layers -->
+    <div class="bg-layer bg-gradient"></div>
+    <div class="bg-layer bg-geometric"></div>
+    
+    <!-- Floating Shapes - Genesis Style -->
+    <div class="floating-shapes">
+      <div class="genesis-shape diamond"></div>
+      <div class="genesis-shape triangle"></div>
+      <div class="genesis-shape hexagon"></div>
+      <div class="genesis-shape diamond"></div>
+      <div class="genesis-shape triangle"></div>
+      <div class="genesis-shape hexagon"></div>
+    </div>
+
+    <!-- Accent Dots -->
+    <div class="accent-dots">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <div class="hero-section">
+        <div class="logo-section">
+          <div class="logo-icon"></div>
+          <div class="company-name">FINTRACK</div>
+        </div>
+        
+        <div class="tagline">GENESIS SCRIPT</div>
+        
+        <h1 class="title">Your CFO in Your Pocket</h1>
+        <p class="subtitle">Stop drowning in receipts and spreadsheets. FinTrack handles your books while you focus on what actually makes money.</p>
+        <p class="highlight">Because small business owners have better things to do than categorize expenses at midnight</p>
+        <a href="mailto:sabrinapengiran@gmail.com" class="cta-button">Get Early Access</a>
+      </div>
+
+      <div class="scroll-indicator">
+        <div style="font-size: 1.5rem;">↓</div>
+      </div>
+
+      <section class="features-section">
+        <h2 class="features-title">Why Your Accountant Will Love You</h2>
+        <ul class="features-grid">
+          <li class="feature-item">
+            <span class="feature-icon">🧠</span>
+            <div class="feature-text">Smart expense tracking that actually learns your business patterns. Upload a receipt, we'll categorize it. Do it enough times, we'll predict your next quarter's spending.</div>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">📈</span>
+            <div class="feature-text">See where your money's really going with charts that don't require a finance degree. Spot cash flow problems before they bite you in the ass.</div>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">🔧</span>
+            <div class="feature-text">Plugs into whatever you're already using. QuickBooks, Xero, that CRM you overpaid for, your bank feeds – we play nice with everyone.</div>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">🏦</span>
+            <div class="feature-text">Bank-level security because your financial data isn't a side hustle for us. Multi-factor auth, encryption, the works. Sleep better at night.</div>
+          </li>
+          <li class="feature-item">
+            <span class="feature-icon">💰</span>
+            <div class="feature-text">Start free, upgrade when you're making money. Basic features cost nothing. Advanced stuff for when you're ready to scale up and need the big-kid tools.</div>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced parallax scrolling with Genesis theme
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const rate = scrolled * -0.3;
+      const rate2 = scrolled * -0.1;
+      const rate3 = scrolled * -0.05;
+      
+      document.querySelector('.bg-gradient').style.transform = `translateZ(-1px) scale(2) translateY(${rate}px)`;
+      document.querySelector('.bg-geometric').style.transform = `translateZ(-0.5px) scale(1.5) translateY(${rate2}px)`;
+      document.querySelector('.floating-shapes').style.transform = `translateZ(-0.3px) scale(1.3) translateY(${rate3}px)`;
+    });
+
+    // Add subtle mouse movement parallax
+    document.addEventListener('mousemove', (e) => {
+      const mouseX = (e.clientX / window.innerWidth - 0.5) * 20;
+      const mouseY = (e.clientY / window.innerHeight - 0.5) * 20;
+      
+      document.querySelector('.floating-shapes').style.transform += ` translate(${mouseX}px, ${mouseY}px)`;
+      document.querySelector('.logo-icon').style.transform = `rotate(45deg) translate(${mouseX * 0.5}px, ${mouseY * 0.5}px)`;
+    });
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, observerOptions);
+
+    // Observe feature items for staggered animations
+    document.querySelectorAll('.feature-item').forEach((item, index) => {
+      item.style.animationDelay = `${index * 0.15}s`;
+      observer.observe(item);
+    });
+
+    // Add smooth scrolling for scroll indicator
+    document.querySelector('.scroll-indicator').addEventListener('click', () => {
+      document.querySelector('.features-section').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+</html>
