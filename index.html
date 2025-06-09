@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FinTrack Genesis</title>
+  <title>FinTrack</title>
   <style>
     * {
       margin: 0;
@@ -12,505 +12,674 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       overflow-x: hidden;
-      background: #f5f5f5;
-      color: #2d4a3e;
-    }
-
-    /* Parallax Container */
-    .parallax-container {
-      height: 100vh;
-      overflow-x: hidden;
-      overflow-y: auto;
-      perspective: 1px;
+      background: #ffffff;
+      color: #1d1d1f;
+      cursor: none;
       scroll-behavior: smooth;
     }
 
-    /* Background Layers */
-    .bg-layer {
+    /* Custom Cursor - Apple style */
+    .custom-cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      background: #1d1d1f;
+      transition: all 0.15s ease;
+      mix-blend-mode: difference;
+    }
+
+    .cursor-hover {
+      transform: scale(3);
+      background: #34d399;
+      mix-blend-mode: normal;
+    }
+
+    /* Navigation - Apple style */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 12px 0;
+    }
+
+    .nav-content {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+    }
+
+    .nav-logo {
+      font-size: 21px;
+      font-weight: 600;
+      color: #1d1d1f;
+      text-decoration: none;
+      letter-spacing: -0.022em;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 40px;
+    }
+
+    .nav-link {
+      color: #1d1d1f;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 400;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #34d399;
+    }
+
+    /* Hero Section - Apple style */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 22px 80px;
+      background: linear-gradient(135deg, #ffffff 0%, #fef3c7 50%, #ecfdf5 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-    }
-
-    .bg-gradient {
-      background: linear-gradient(135deg, 
-        #f5f5f5 0%,
-        #e8f5e8 25%,
-        #d4f4d4 50%,
-        #c1f2c1 75%,
-        #aef0ae 100%);
-      transform: translateZ(-1px) scale(2);
-    }
-
-    .bg-geometric {
-      background-image: 
-        radial-gradient(circle at 20% 20%, rgba(52, 211, 153, 0.1) 0%, transparent 30%),
-        radial-gradient(circle at 80% 40%, rgba(34, 197, 94, 0.08) 0%, transparent 35%),
-        radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 40%);
-      transform: translateZ(-0.5px) scale(1.5);
-    }
-
-    /* Floating Shapes - Genesis Style */
-    .floating-shapes {
-      position: absolute;
-      width: 100%;
-      height: 200%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(252, 211, 77, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.1) 0%, transparent 50%);
       pointer-events: none;
-      transform: translateZ(-0.3px) scale(1.3);
     }
 
-    .genesis-shape {
-      position: absolute;
-      background: linear-gradient(135deg, #34d399, #10b981, #065f46);
-      animation: float 8s ease-in-out infinite;
-      opacity: 0.7;
-    }
-
-    .diamond {
-      width: 60px;
-      height: 60px;
-      transform: rotate(45deg);
-      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    }
-
-    .triangle {
-      width: 0;
-      height: 0;
-      border-left: 30px solid transparent;
-      border-right: 30px solid transparent;
-      border-bottom: 52px solid #22c55e;
-      background: none !important;
-    }
-
-    .hexagon {
-      width: 50px;
-      height: 50px;
-      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    }
-
-    .genesis-shape:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; }
-    .genesis-shape:nth-child(2) { top: 60%; left: 85%; animation-delay: 2s; }
-    .genesis-shape:nth-child(3) { top: 30%; left: 75%; animation-delay: 4s; }
-    .genesis-shape:nth-child(4) { top: 80%; left: 15%; animation-delay: 1s; }
-    .genesis-shape:nth-child(5) { top: 5%; left: 60%; animation-delay: 3s; }
-    .genesis-shape:nth-child(6) { top: 45%; left: 5%; animation-delay: 5s; }
-
-    /* Main Content */
-    .content {
+    .hero-content {
       position: relative;
       z-index: 1;
-      min-height: 100vh;
+      max-width: 980px;
+    }
+
+    /* Genesis Logo - Apple style presentation */
+    .logo-container {
+      margin-bottom: 60px;
+      animation: logoEntrance 1.2s ease-out;
+    }
+
+    .genesis-logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      position: relative;
+      filter: drop-shadow(0 4px 20px rgba(52, 211, 153, 0.3));
+    }
+
+    .logo-diamond {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #fcd34d 0%, #34d399 50%, #065f46 100%);
+      clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
+      animation: logoFloat 4s ease-in-out infinite;
+    }
+
+    .hero-headline {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.003em;
+      color: #1d1d1f;
+      margin-bottom: 20px;
+      animation: textSlideUp 0.8s ease-out 0.3s backwards;
+    }
+
+    .hero-subheadline {
+      font-size: clamp(21px, 3vw, 28px);
+      font-weight: 400;
+      line-height: 1.29;
+      color: #1d1d1f;
+      margin-bottom: 40px;
+      animation: textSlideUp 0.8s ease-out 0.5s backwards;
+    }
+
+    .cta-container {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: 2rem;
-      text-align: center;
+      gap: 20px;
+      animation: textSlideUp 0.8s ease-out 0.7s backwards;
     }
 
-    .hero-section {
-      max-width: 1000px;
-      margin-bottom: 6rem;
-    }
-
-    .logo-section {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 3rem;
-      gap: 1rem;
-    }
-
-    .logo-icon {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #34d399, #10b981, #065f46);
-      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-      animation: logoFloat 3s ease-in-out infinite;
-    }
-
-    .company-name {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 800;
-      background: linear-gradient(135deg, #065f46, #047857, #10b981);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 0.05em;
-    }
-
-    .tagline {
-      font-size: clamp(0.9rem, 2vw, 1.1rem);
-      color: #047857;
-      font-weight: 600;
-      margin-bottom: 2rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .title {
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
-      font-weight: 900;
-      margin-bottom: 2rem;
-      color: #065f46;
-      line-height: 1.1;
-      animation: slideInUp 0.8s ease-out;
-    }
-
-    .subtitle {
-      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-      color: #047857;
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-      animation: slideInUp 0.8s ease-out 0.2s backwards;
-      font-weight: 500;
-    }
-
-    .highlight {
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      color: #10b981;
-      font-weight: 700;
-      margin-bottom: 3rem;
-      animation: slideInUp 0.8s ease-out 0.4s backwards;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .cta-button {
-      display: inline-block;
-      padding: 1.2rem 3rem;
-      background: linear-gradient(135deg, #10b981, #059669, #047857);
-      color: white;
+    .cta-primary {
+      background: #34d399;
+      color: #ffffff;
+      border: none;
+      border-radius: 980px;
+      padding: 17px 40px;
+      font-size: 17px;
+      font-weight: 400;
       text-decoration: none;
-      border-radius: 0;
-      clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
-      font-size: 1.2rem;
-      font-weight: 700;
+      display: inline-block;
+      transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
-      transition: all 0.4s ease;
-      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
-      animation: slideInUp 0.8s ease-out 0.6s backwards;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
     }
 
-    .cta-button::before {
+    .cta-primary::before {
       content: '';
       position: absolute;
       top: 0;
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
       transition: left 0.5s;
     }
 
-    .cta-button:hover {
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 20px 50px rgba(16, 185, 129, 0.4);
+    .cta-primary:hover {
+      background: #10b981;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(52, 211, 153, 0.3);
     }
 
-    .cta-button:hover::before {
+    .cta-primary:hover::before {
       left: 100%;
     }
 
-    /* Features Section - Genesis Style */
-    .features-section {
-      width: 100%;
+    .cta-secondary {
+      color: #06b6d4;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 400;
+      transition: color 0.3s ease;
+    }
+
+    .cta-secondary:hover {
+      color: #0891b2;
+    }
+
+    /* Features Section - Apple style */
+    .features {
+      padding: 120px 22px;
+      background: #ffffff;
+    }
+
+    .features-container {
       max-width: 1200px;
-      margin-top: 8rem;
-      padding: 4rem 2rem;
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(20px);
-      border-radius: 0;
-      clip-path: polygon(0 5%, 100% 0%, 100% 95%, 0% 100%);
-      border: 2px solid rgba(16, 185, 129, 0.2);
-      animation: slideInUp 0.8s ease-out 0.8s backwards;
-      position: relative;
-      overflow: hidden;
+      margin: 0 auto;
     }
 
-    .features-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        linear-gradient(45deg, transparent 40%, rgba(16, 185, 129, 0.05) 50%, transparent 60%),
-        linear-gradient(-45deg, transparent 40%, rgba(52, 211, 153, 0.03) 50%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .features-title {
-      font-size: clamp(2rem, 4vw, 3rem);
-      margin-bottom: 3rem;
-      color: #065f46;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      position: relative;
-      z-index: 1;
+    .features-headline {
+      text-align: center;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.003em;
+      color: #1d1d1f;
+      margin-bottom: 80px;
     }
 
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
+      gap: 60px;
       list-style: none;
-      position: relative;
-      z-index: 1;
     }
 
-    .feature-item {
-      padding: 2.5rem;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(10px);
-      clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+    .feature-card {
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 18px;
       transition: all 0.4s ease;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, #ffffff, #fef3c7);
+      border: 1px solid rgba(252, 211, 77, 0.2);
     }
 
-    .feature-item::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, #34d399, #10b981, #047857);
-      transition: left 0.4s ease;
-    }
-
-    .feature-item:hover {
-      transform: translateY(-8px) scale(1.02);
-      background: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 25px 50px rgba(16, 185, 129, 0.2);
-    }
-
-    .feature-item:hover::before {
-      left: 0;
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #ffffff, #ecfdf5);
+      border-color: rgba(52, 211, 153, 0.3);
     }
 
     .feature-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
+      font-size: 48px;
+      margin-bottom: 24px;
       display: block;
-      filter: drop-shadow(0 2px 4px rgba(16, 185, 129, 0.3));
+      filter: drop-shadow(0 2px 10px rgba(52, 211, 153, 0.2));
     }
 
-    .feature-text {
-      font-size: 1.1rem;
-      color: #047857;
-      line-height: 1.6;
-      font-weight: 500;
+    .feature-title {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.17;
+      color: #1d1d1f;
+      margin-bottom: 12px;
     }
 
-    /* Scroll indicator */
-    .scroll-indicator {
+    .feature-description {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.47;
+      color: #86868b;
+    }
+
+    /* Chatbot - Apple style */
+    .chatbot-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+    }
+
+    .chatbot-trigger {
+      width: 60px;
+      height: 60px;
+      background: #34d399;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(52, 211, 153, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .chatbot-trigger:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 30px rgba(52, 211, 153, 0.4);
+    }
+
+    .chatbot-icon {
+      font-size: 24px;
+      color: white;
+    }
+
+    .chatbot-window {
       position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      color: #10b981;
-      animation: bounce 2s infinite;
-      font-weight: bold;
+      bottom: 75px;
+      right: 0;
+      width: 350px;
+      height: 500px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      transform: scale(0) translateY(20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      overflow: hidden;
+    }
+
+    .chatbot-window.active {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    .chatbot-header {
+      background: linear-gradient(135deg, #34d399, #10b981);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .chatbot-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+
+    .chatbot-close:hover {
+      opacity: 1;
+    }
+
+    .chatbot-title {
+      font-size: 19px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .chatbot-subtitle {
+      font-size: 15px;
+      opacity: 0.9;
+      margin: 8px 0 0 0;
+      font-weight: 400;
+    }
+
+    .chatbot-messages {
+      height: 350px;
+      overflow-y: auto;
+      padding: 20px;
+      background: rgba(248, 248, 248, 0.5);
+    }
+
+    .message {
+      margin-bottom: 16px;
+      animation: messageSlideIn 0.3s ease-out;
+    }
+
+    .message.bot {
+      text-align: left;
+    }
+
+    .message.user {
+      text-align: right;
+    }
+
+    .message-bubble {
+      display: inline-block;
+      padding: 12px 16px;
+      border-radius: 18px;
+      max-width: 80%;
+      word-wrap: break-word;
+      font-size: 15px;
+      line-height: 1.33;
+    }
+
+    .bot .message-bubble {
+      background: #e5e5ea;
+      color: #000000;
+    }
+
+    .user .message-bubble {
+      background: #34d399;
+      color: white;
+    }
+
+    .chatbot-input-area {
+      padding: 16px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .chatbot-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      outline: none;
+      font-size: 15px;
+      background: white;
+      transition: border-color 0.2s ease;
+    }
+
+    .chatbot-input:focus {
+      border-color: #34d399;
+    }
+
+    .chatbot-send {
+      width: 40px;
+      height: 40px;
+      background: #34d399;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+
+    .chatbot-send:hover {
+      background: #10b981;
     }
 
     /* Animations */
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      25% { transform: translateY(-15px) rotate(3deg); }
-      50% { transform: translateY(-25px) rotate(0deg); }
-      75% { transform: translateY(-10px) rotate(-3deg); }
+    @keyframes logoEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     @keyframes logoFloat {
-      0%, 100% { transform: rotate(45deg) translateY(0px); }
-      50% { transform: rotate(45deg) translateY(-10px); }
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(180deg);
+      }
     }
 
-    @keyframes slideInUp {
-      from {
+    @keyframes textSlideUp {
+      0% {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translateY(30px);
       }
-      to {
+      100% {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-      40% { transform: translateX(-50%) translateY(-10px); }
-      60% { transform: translateX(-50%) translateY(-5px); }
+    @keyframes messageSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* Responsive Design */
     @media (max-width: 768px) {
-      .content {
-        padding: 1rem;
+      .nav-links {
+        display: none;
       }
       
-      .features-section {
-        margin-top: 4rem;
-        padding: 2rem 1rem;
-        clip-path: polygon(0 3%, 100% 0%, 100% 97%, 0% 100%);
+      .hero {
+        padding: 100px 22px 60px;
+      }
+      
+      .features {
+        padding: 80px 22px;
       }
       
       .features-grid {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 40px;
       }
       
-      .feature-item {
-        padding: 2rem;
-        clip-path: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%);
+      .feature-card {
+        padding: 30px 15px;
       }
-
-      .logo-section {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      .cta-button {
-        clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+      
+      .chatbot-window {
+        width: 300px;
+        height: 450px;
       }
     }
 
-    /* Genesis-style accent elements */
-    .accent-dots {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
+    /* Scroll Effects */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
     }
 
-    .dot {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: #10b981;
-      border-radius: 50%;
-      opacity: 0.6;
-    }
-
-    .dot:nth-child(1) { top: 10%; left: 15%; animation: twinkle 2s infinite; }
-    .dot:nth-child(2) { top: 25%; left: 85%; animation: twinkle 2s infinite 0.5s; }
-    .dot:nth-child(3) { top: 70%; left: 10%; animation: twinkle 2s infinite 1s; }
-    .dot:nth-child(4) { top: 80%; left: 90%; animation: twinkle 2s infinite 1.5s; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.5); }
+    .scroll-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-  <div class="parallax-container">
-    <!-- Background Layers -->
-    <div class="bg-layer bg-gradient"></div>
-    <div class="bg-layer bg-geometric"></div>
-    
-    <!-- Floating Shapes - Genesis Style -->
-    <div class="floating-shapes">
-      <div class="genesis-shape diamond"></div>
-      <div class="genesis-shape triangle"></div>
-      <div class="genesis-shape hexagon"></div>
-      <div class="genesis-shape diamond"></div>
-      <div class="genesis-shape triangle"></div>
-      <div class="genesis-shape hexagon"></div>
-    </div>
+  <!-- Custom Cursor -->
+  <div class="custom-cursor" id="customCursor"></div>
 
-    <!-- Accent Dots -->
-    <div class="accent-dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="#" class="nav-logo">FinTrack</a>
+      <ul class="nav-links">
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#pricing" class="nav-link">Pricing</a></li>
+        <li><a href="#support" class="nav-link">Support</a></li>
+      </ul>
     </div>
+  </nav>
 
-    <!-- Main Content -->
-    <div class="content">
-      <div class="hero-section">
-        <div class="logo-section">
-          <div class="logo-icon"></div>
-          <div class="company-name">FINTRACK</div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="logo-container">
+        <div class="genesis-logo">
+          <div class="logo-diamond"></div>
         </div>
-        
-        <div class="tagline">GENESIS SCRIPT</div>
-        
-        <h1 class="title">Your CFO in Your Pocket</h1>
-        <p class="subtitle">Stop drowning in receipts and spreadsheets. FinTrack handles your books while you focus on what actually makes money.</p>
-        <p class="highlight">Because small business owners have better things to do than categorize expenses at midnight</p>
-        <a href="mailto:sabrinapengiran@gmail.com" class="cta-button">Get Early Access</a>
       </div>
-
-      <div class="scroll-indicator">
-        <div style="font-size: 1.5rem;">↓</div>
+      
+      <h1 class="hero-headline">Your CFO in Your Pocket</h1>
+      <p class="hero-subheadline">Stop drowning in receipts and spreadsheets. FinTrack handles your books while you focus on what actually makes money.</p>
+      
+      <div class="cta-container">
+        <a href="mailto:sabrinapengiran@gmail.com" class="cta-primary">Get Early Access</a>
+        <a href="#features" class="cta-secondary">Learn more ›</a>
       </div>
+    </div>
+  </section>
 
-      <section class="features-section">
-        <h2 class="features-title">Why Your Accountant Will Love You</h2>
-        <ul class="features-grid">
-          <li class="feature-item">
-            <span class="feature-icon">🧠</span>
-            <div class="feature-text">Smart expense tracking that actually learns your business patterns. Upload a receipt, we'll categorize it. Do it enough times, we'll predict your next quarter's spending.</div>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">📈</span>
-            <div class="feature-text">See where your money's really going with charts that don't require a finance degree. Spot cash flow problems before they bite you in the ass.</div>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">🔧</span>
-            <div class="feature-text">Plugs into whatever you're already using. QuickBooks, Xero, that CRM you overpaid for, your bank feeds – we play nice with everyone.</div>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">🏦</span>
-            <div class="feature-text">Bank-level security because your financial data isn't a side hustle for us. Multi-factor auth, encryption, the works. Sleep better at night.</div>
-          </li>
-          <li class="feature-item">
-            <span class="feature-icon">💰</span>
-            <div class="feature-text">Start free, upgrade when you're making money. Basic features cost nothing. Advanced stuff for when you're ready to scale up and need the big-kid tools.</div>
-          </li>
-        </ul>
-      </section>
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="features-container">
+      <h2 class="features-headline scroll-reveal">Why Your Accountant Will Love You</h2>
+      
+      <ul class="features-grid">
+        <li class="feature-card scroll-reveal">
+          <span class="feature-icon">🧠</span>
+          <h3 class="feature-title">Smart Learning</h3>
+          <p class="feature-description">Upload a receipt, we'll categorize it. Do it enough times, we'll predict your next quarter's spending.</p>
+        </li>
+        
+        <li class="feature-card scroll-reveal">
+          <span class="feature-icon">📈</span>
+          <h3 class="feature-title">Clear Insights</h3>
+          <p class="feature-description">See where your money's really going with charts that don't require a finance degree.</p>
+        </li>
+        
+        <li class="feature-card scroll-reveal">
+          <span class="feature-icon">🔧</span>
+          <h3 class="feature-title">Works Everywhere</h3>
+          <p class="feature-description">Plugs into whatever you're already using. QuickBooks, Xero, that CRM you overpaid for.</p>
+        </li>
+        
+        <li class="feature-card scroll-reveal">
+          <span class="feature-icon">🏦</span>
+          <h3 class="feature-title">Bank-Level Security</h3>
+          <p class="feature-description">Your financial data isn't a side hustle for us. Multi-factor auth, encryption, the works.</p>
+        </li>
+        
+        <li class="feature-card scroll-reveal">
+          <span class="feature-icon">💰</span>
+          <h3 class="feature-title">Fair Pricing</h3>
+          <p class="feature-description">Start free, upgrade when you're making money. Basic features cost nothing.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Chatbot -->
+  <div class="chatbot-container">
+    <button class="chatbot-trigger" id="chatbotTrigger">
+      <div class="chatbot-icon">💬</div>
+    </button>
+    
+    <div class="chatbot-window" id="chatbotWindow">
+      <div class="chatbot-header">
+        <button class="chatbot-close" id="chatbotClose">×</button>
+        <h3 class="chatbot-title">Chat with FinTrack</h3>
+        <p class="chatbot-subtitle">Ask us anything about your financial management needs!</p>
+      </div>
+      
+      <div class="chatbot-messages" id="chatbotMessages">
+        <div class="message bot">
+          <div class="message-bubble">
+            Hey there! 👋 I'm here to help you learn more about FinTrack. What would you like to know?
+          </div>
+        </div>
+      </div>
+      
+      <div class="chatbot-input-area">
+        <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Type your message...">
+        <button class="chatbot-send" id="chatbotSend">→</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // Enhanced parallax scrolling with Genesis theme
-    window.addEventListener('scroll', () => {
-      const scrolled = window.pageYOffset;
-      const rate = scrolled * -0.3;
-      const rate2 = scrolled * -0.1;
-      const rate3 = scrolled * -0.05;
-      
-      document.querySelector('.bg-gradient').style.transform = `translateZ(-1px) scale(2) translateY(${rate}px)`;
-      document.querySelector('.bg-geometric').style.transform = `translateZ(-0.5px) scale(1.5) translateY(${rate2}px)`;
-      document.querySelector('.floating-shapes').style.transform = `translateZ(-0.3px) scale(1.3) translateY(${rate3}px)`;
-    });
-
-    // Add subtle mouse movement parallax
+    // Custom cursor implementation
+    const cursor = document.getElementById('customCursor');
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    
     document.addEventListener('mousemove', (e) => {
-      const mouseX = (e.clientX / window.innerWidth - 0.5) * 20;
-      const mouseY = (e.clientY / window.innerHeight - 0.5) * 20;
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    function animateCursor() {
+      const speed = 0.2;
+      cursorX += (mouseX - cursorX) * speed;
+      cursorY += (mouseY - cursorY) * speed;
       
-      document.querySelector('.floating-shapes').style.transform += ` translate(${mouseX}px, ${mouseY}px)`;
-      document.querySelector('.logo-icon').style.transform = `rotate(45deg) translate(${mouseX * 0.5}px, ${mouseY * 0.5}px)`;
+      cursor.style.left = cursorX - 6 + 'px';
+      cursor.style.top = cursorY - 6 + 'px';
+      
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    
+    // Cursor hover effects
+    const hoverElements = document.querySelectorAll('a, button, .feature-card');
+    
+    hoverElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('cursor-hover');
+      });
+      
+      el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('cursor-hover');
+      });
     });
 
-    // Intersection Observer for scroll animations
+    // Scroll reveal animation
     const observerOptions = {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
@@ -519,21 +688,142 @@
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.style.animationPlayState = 'running';
+          entry.target.classList.add('revealed');
         }
       });
     }, observerOptions);
 
-    // Observe feature items for staggered animations
-    document.querySelectorAll('.feature-item').forEach((item, index) => {
-      item.style.animationDelay = `${index * 0.15}s`;
-      observer.observe(item);
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+      observer.observe(el);
     });
 
-    // Add smooth scrolling for scroll indicator
-    document.querySelector('.scroll-indicator').addEventListener('click', () => {
-      document.querySelector('.features-section').scrollIntoView({
-        behavior: 'smooth'
+    // Chatbot functionality
+    const chatbotTrigger = document.getElementById('chatbotTrigger');
+    const chatbotWindow = document.getElementById('chatbotWindow');
+    const chatbotClose = document.getElementById('chatbotClose');
+    const chatbotInput = document.getElementById('chatbotInput');
+    const chatbotSend = document.getElementById('chatbotSend');
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    
+    let chatbotOpen = false;
+    
+    const botResponses = {
+      greeting: [
+        "Hello! Ready to revolutionize your financial management? 🚀",
+        "Hi there! How can FinTrack help your business today?",
+        "Hey! Excited to chat about making your finances easier!"
+      ],
+      pricing: [
+        "Great question! We start with a completely free tier - no credit card needed. Premium features kick in when you're ready to scale up.",
+        "Our freemium model means you can start using FinTrack today without spending a dime. Advanced analytics and integrations are available as you grow!"
+      ],
+      features: [
+        "FinTrack does the heavy lifting: smart expense categorization, cash flow forecasting, bank-level security, and integrations with QuickBooks, Xero, and more.",
+        "We handle everything from receipt scanning to predictive analytics. Think of us as your CFO in your pocket! 💼"
+      ],
+      security: [
+        "Security is our top priority! We use bank-level encryption, multi-factor authentication, and SOC 2 compliance.",
+        "Your data is encrypted both in transit and at rest. We never store sensitive banking credentials."
+      ],
+      integration: [
+        "We play nice with everyone! QuickBooks, Xero, your bank feeds, that expensive CRM you bought - if it has an API, we probably integrate with it.",
+        "Our API connects with 200+ business tools. From accounting software to payment processors, we've got you covered!"
+      ],
+      demo: [
+        "I'd love to show you FinTrack in action! Email sabrinapengiran@gmail.com and we'll set up a personalized demo.",
+        "Ready for a demo? Shoot us an email at sabrinapengiran@gmail.com and we'll show you exactly how FinTrack can transform your business finances!"
+      ],
+      default: [
+        "That's a great question! For detailed info, email sabrinapengiran@gmail.com or try asking about our features, pricing, security, or integrations!",
+        "I love the curiosity! For specific questions, email sabrinapengiran@gmail.com - our team has all the answers!"
+      ]
+    };
+    
+    function getBotResponse(userMessage) {
+      const message = userMessage.toLowerCase();
+      
+      if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+        return getRandomResponse('greeting');
+      } else if (message.includes('price') || message.includes('cost') || message.includes('free') || message.includes('money')) {
+        return getRandomResponse('pricing');
+      } else if (message.includes('feature') || message.includes('what') || message.includes('how') || message.includes('expense')) {
+        return getRandomResponse('features');
+      } else if (message.includes('security') || message.includes('safe') || message.includes('secure') || message.includes('data')) {
+        return getRandomResponse('security');
+      } else if (message.includes('integrate') || message.includes('quickbooks') || message.includes('xero') || message.includes('api')) {
+        return getRandomResponse('integration');
+      } else if (message.includes('demo') || message.includes('try') || message.includes('test') || message.includes('show')) {
+        return getRandomResponse('demo');
+      } else {
+        return getRandomResponse('default');
+      }
+    }
+    
+    function getRandomResponse(category) {
+      const responses = botResponses[category];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+    
+    function addMessage(message, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+      
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'message-bubble';
+      bubbleDiv.textContent = message;
+      
+      messageDiv.appendChild(bubbleDiv);
+      chatbotMessages.appendChild(messageDiv);
+      
+      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+    
+    function sendMessage() {
+      const message = chatbotInput.value.trim();
+      if (!message) return;
+      
+      addMessage(message, true);
+      chatbotInput.value = '';
+      
+      setTimeout(() => {
+        const response = getBotResponse(message);
+        addMessage(response);
+      }, 800);
+    }
+    
+    chatbotTrigger.addEventListener('click', () => {
+      chatbotOpen = !chatbotOpen;
+      chatbotWindow.classList.toggle('active', chatbotOpen);
+      
+      if (chatbotOpen) {
+        chatbotInput.focus();
+      }
+    });
+    
+    chatbotClose.addEventListener('click', () => {
+      chatbotOpen = false;
+      chatbotWindow.classList.remove('active');
+    });
+    
+    chatbotSend.addEventListener('click', sendMessage);
+    
+    chatbotInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
       });
     });
   </script>
