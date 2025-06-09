@@ -18,6 +18,7 @@
       color: #1d1d1f;
       cursor: none;
       scroll-behavior: smooth;
+      font-display: swap;
     }
 
     /* Custom Cursor - Apple style */
@@ -99,6 +100,7 @@
       background: linear-gradient(135deg, #ffffff 0%, #fef3c7 50%, #ecfdf5 100%);
       position: relative;
       overflow: hidden;
+      will-change: transform;
     }
 
     .hero::before {
@@ -140,6 +142,8 @@
       background: linear-gradient(135deg, #fcd34d 0%, #34d399 50%, #065f46 100%);
       clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
       animation: logoFloat 4s ease-in-out infinite;
+      transform: translateZ(0);
+      will-change: transform;
     }
 
     .hero-headline {
@@ -644,10 +648,11 @@
   </div>
 
   <script>
-    // Custom cursor implementation
+    // Optimized cursor implementation
     const cursor = document.getElementById('customCursor');
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
+    let animationId;
     
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX;
@@ -655,16 +660,23 @@
     });
     
     function animateCursor() {
-      const speed = 0.2;
-      cursorX += (mouseX - cursorX) * speed;
-      cursorY += (mouseY - cursorY) * speed;
+      const speed = 0.15;
+      const dx = mouseX - cursorX;
+      const dy = mouseY - cursorY;
       
-      cursor.style.left = cursorX - 6 + 'px';
-      cursor.style.top = cursorY - 6 + 'px';
-      
-      requestAnimationFrame(animateCursor);
+      if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
+        cursorX += dx * speed;
+        cursorY += dy * speed;
+        
+        cursor.style.transform = `translate3d(${cursorX - 6}px, ${cursorY - 6}px, 0)`;
+        animationId = requestAnimationFrame(animateCursor);
+      } else {
+        cancelAnimationFrame(animationId);
+      }
     }
-    animateCursor();
+    
+    // Start animation on first mouse move
+    document.addEventListener('mousemove', animateCursor, { once: true });
     
     // Cursor hover effects
     const hoverElements = document.querySelectorAll('a, button, .feature-card');
@@ -679,22 +691,41 @@
       });
     });
 
-    // Scroll reveal animation
+    // Optimized scroll reveal animation
     const observerOptions = {
       threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+      rootMargin: '0px 0px -30px 0px'
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
+          observer.unobserve(entry.target); // Stop observing once revealed
         }
       });
     }, observerOptions);
 
-    document.querySelectorAll('.scroll-reveal').forEach(el => {
-      observer.observe(el);
+    // Use passive event listeners and throttle
+    let ticking = false;
+    
+    function updateOnScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          document.querySelectorAll('.scroll-reveal:not(.revealed)').forEach(el => {
+            observer.observe(el);
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    // Initialize observer for visible elements
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.scroll-reveal').forEach(el => {
+        observer.observe(el);
+      });
     });
 
     // Chatbot functionality
